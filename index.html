@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html PUBliC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<TITLE>Livequery联通商城放大镜相册特效</TITLE>
+<liNK rel=stylesheet type=text/css href="css/smallseashell.css">
+<script type=text/javascript src="js/jquery-1.4.3.min.js"></script>
+<script type=text/javascript src="js/jquery.jqzoom.js"></script>
+<script type=text/javascript src="js/jquery.livequery.js"></script>
+<BODY>
+<script type=text/javascript>
+$(function(){
+    
+    /* 鼠标移动小图，小图对应大图显示在大图上，并替换放大镜中的图*/
+    $("#specList ul li img").livequery("mouseover",function(){ 
+        var imgSrc = $(this).attr("src");
+        var i = imgSrc.lastIndexOf(".");
+        var unit = imgSrc.substring(i);
+        imgSrc = imgSrc.substring(0,i);
+        var imgSrc_small = $(this).attr("src_D");
+        var imgSrc_big = $(this).attr("src_H");
+        $("#bigImg").attr({"src": imgSrc_small ,"jqimg": imgSrc_big });
+        $(this).css({"border":"2px solid #3399cc","padding":"1px"});
+    });
+    
+    $("#specList ul li img").livequery("mouseout",function(){ 
+        $(this).css({"border":"1px solid #ddd","padding":"2px"});
+    });
+    
+    //使用jqzoom
+    $(".jqzoom").jqueryzoom({
+        xzoom: 300, //放大图的宽度(默认是 200)
+        yzoom: 300, //放大图的高度(默认是 200)
+        offset: 10, //离原图的距离(默认是 10)
+        position: "right", //放大图的定位(默认是 "right")
+        preload:1   
+    });
+    
+    /*如果小图过多，则出现滚动条在一行展示*/
+    var btnNext = $('#specRight');
+    var btnPrev = $('#specLeft')
+    var ul = btnPrev.next().find('ul');
+
+    var len = ul.find('li').length;
+    var i = 0 ;
+    if (len > 5) {
+        $("#specRight").addClass("specRightF").removeClass("specRightT");
+        ul.css("width", 54 * len)
+        btnNext.click(function(e) {
+            if(i>=len-5){
+                
+                return;
+            }
+            i++;
+            if(i == len-5){
+                $("#specRight").addClass("specRightT").removeClass("specRightF");
+            }
+            $("#specLeft").addClass("specLeftF").removeClass("specLeftT");
+            moveS(i);
+        })
+        btnPrev.click(function(e) {
+            if(i<=0){
+                return;
+            }
+            i--;
+            if(i==0){
+                $("#specLeft").addClass("specLeftT").removeClass("specLeftF");
+            }
+            $("#specRight").addClass("specRightF").removeClass("specRightT");
+            moveS(i);
+        })
+    }
+    function moveS(i) {
+        ul.animate({left:-54 * i}, 500)
+    }
+    function picAuto(){
+      if ($(".listImg li").size()<=5) {
+        $("#specLeft,#specRight").hide();
+      }
+    }
+    picAuto();
+});
+</script>
+<div id="preview">
+	<div class=jqzoom>
+		<img id=bigImg src="images/img01s.jpg" width=310 height=310 jqimg="images/img01b.jpg">
+	</div>
+	<div id=spec>
+		<div id=specLeft class="control specLeftT"></div>
+		<div id=specList>
+			<ul class=listImg>
+			  <li><img id=smallPicOne src="images/img01s.jpg" src_H="images/img01b.jpg" src_D="images/img01s.jpg">  </li>
+			  <li><img id=smallPicOne src="images/img02s.jpg" src_H="images/img02b.jpg" src_D="images/img02s.jpg">  </li>
+			  <li><img id=smallPicOne src="images/img03s.jpg" src_H="images/img03b.jpg" src_D="images/img03s.jpg">  </li>
+			  <li><img id=smallPicOne src="images/img04s.jpg" src_H="images/img04b.jpg" src_D="images/img04s.jpg">  </li>
+			  <li><img id=smallPicOne src="images/img01s.jpg" src_H="images/img01b.jpg" src_D="images/img01s.jpg">  </li>
+			  <li><img id=smallPicOne src="images/img04s.jpg" src_H="images/img04b.jpg" src_D="images/img04s.jpg">  </li>
+			  <li><img id=smallPicOne src="images/img01s.jpg" src_H="images/img01b.jpg" src_D="images/img01s.jpg">  </li>
+			</ul>
+		</div>
+		<div id=specRight class="control specRightT"></div>
+	</div>
+</div>
+</BODY>
+</HTML>
